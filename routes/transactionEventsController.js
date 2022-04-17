@@ -87,9 +87,9 @@ eventRouter.post('/events/transactions', (req, res) => {
 
 const pool = mysql.createConnection({
     host     : process.env.DB_HOST,
-    user     : 'root',
-    password : 'Coin@123Shift',
-    database : 'coinshift'
+    user     : process.env.DB_USER,
+    password : process.env.DB_PASS,
+    database : process.env.DB_DATABASE
 });
 
 pool.connect((err) => {

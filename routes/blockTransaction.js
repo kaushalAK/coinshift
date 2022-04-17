@@ -200,7 +200,6 @@ blockRouter.post("/block/transactions/blockNumber", (req,res) => {
     "SELECT * from block_transactions_entity where block_hash = (SELECT block_hash from block_entity where block_number = '" +
     data.blockNumber +
     "')";
-    console.log('query--> '+query)
     pool.query(query, Object.values(data), (error, rows) => {
         console.log(rows)
         if (rows && rows.length ==0) {
@@ -222,9 +221,9 @@ blockRouter.post("/block/transactions/blockNumber", (req,res) => {
 
   const pool = mysql.createConnection({
     host     : process.env.DB_HOST,
-    user     : 'root',
-    password : 'Coin@123Shift',
-    database : 'coinshift'
+    user     : process.env.DB_USER,
+    password : process.env.DB_PASS,
+    database : process.env.DB_DATABASE
 });
 
 pool.connect((err) => {
