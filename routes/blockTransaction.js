@@ -223,7 +223,7 @@ blockRouter.post("/block/transactions/blockNumber", (req,res) => {
   const pool = mysql.createConnection({
     host     : process.env.DB_HOST,
     user     : 'root',
-    password : 'password',
+    password : 'Coin@123Shift',
     database : 'coinshift'
 });
 
