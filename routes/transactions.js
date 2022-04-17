@@ -32,10 +32,9 @@ class TransactionChecker {
       for (let txHash of block.transactions) {
         try {
           let tx = await this.web3.eth.getTransaction(txHash);
-          this.persistData(tx);
           if (tx != undefined && this.account == tx.from.toLowerCase()) {
               console.log('Found account')
-            this.persistAccountData(tx);
+              this.persistData(tx);
           }
         } catch (err) {
           continue;
@@ -59,32 +58,6 @@ class TransactionChecker {
 
     const query =
       "INSERT INTO transactions_entity VALUES (?,?,?,?,?,?,?,?,?,?)";
-
-    pool.query(query, Object.values(data), (error) => {
-      if (error) {
-        console.log("Error -->" + error);
-      } else {
-        console.log("Success");
-      }
-    });
-  }
-
-  persistAccountData(transaction) {
-    const data = {
-      txnHash: transaction.hash,
-      blockHash: transaction.blockHash,
-      fromAddress: transaction.from,
-      toAddress: transaction.to,
-      txnIndex: transaction.transactionIndex,
-      value: transaction.value,
-      gas: transaction.gas,
-      gasPrice: transaction.gasPrice,
-      block_number: transaction.blockNumber,
-      type: transaction.type,
-    };
-
-    const query =
-      "INSERT INTO account_transactions_entity VALUES (?,?,?,?,?,?,?,?,?,?)";
 
     pool.query(query, Object.values(data), (error) => {
       if (error) {
@@ -128,61 +101,6 @@ transactionsRouter.post("/transactions", (req, res) => {
   txChecker.checkBlock();
   res.json({ status: "Started Downloading and Data Dump" });
 });
-
-class TransactionDetails {
-  checkTransactions(accounts) {
-    const data = {
-      accounts: accounts,
-    };
-
-    const query = "SELECT * from transactions_entity";
-    pool.query(query, Object.values(data.accounts), (error, rows) => {
-      console.log(query);
-      return rows;
-      if (error) {
-        console.log("error --" + error);
-      } else {
-        console.log("Success");
-      }
-    });
-  }
-
-  getAccountDetails(accounts) {
-    const data = {
-      accounts: accounts,
-    };
-
-    const query = "SELECT * from transactions_entity";
-    pool.query(query, Object.values(data.accounts), (error, rows) => {
-      console.log(query);
-      return rows;
-      if (error) {
-        console.log("error --" + error);
-      } else {
-        console.log("Success");
-      }
-    });
-  }
-}
-
-function getAccountDetails(accounts) {
-  const data = {
-    accounts: accounts,
-  };
-  const query =
-    "SELECT * from transactions_entity where from_address ='" +
-    data.accounts +
-    "'";
-  pool.query(query, Object.values(data.accounts), (error, rows) => {
-    console.log(query);
-    console.log(rows);
-    if (error) {
-      console.log("error --" + error);
-    } else {
-      console.log("Success");
-    }
-  });
-}
 
 transactionsRouter.post("/transaction/details/account", (req, res) => {
   const data = {
